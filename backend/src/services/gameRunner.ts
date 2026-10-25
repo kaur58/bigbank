@@ -16,9 +16,10 @@ function initialState(payload: StartGameResponse): GameState {
     score: payload.score,
     highScore: payload.highScore ?? 0,
     turn: payload.turn ?? 0,
-    failedAdv: 0,
-    successAdv: 0,
+    failedAds: 0,
+    successAds: 0,
     lastFailed: false,
+    tryEveryAd: false,
     sortedAds: [],
   };
 }
@@ -78,7 +79,7 @@ export class GameRunner {
       return;
     }
     this.logger.info(
-      `Game ${this.gameState.gameId ?? '(starting)'} | turn ${this.gameState.turn} | lives ${this.gameState.lives} | gold ${this.gameState.gold} | level ${this.gameState.level} | score ${this.gameState.score} | high score ${this.gameState.highScore} | successful ads ${this.gameState.successAdv} | failed ads ${this.gameState.failedAdv}`,
+      `Game ${this.gameState.gameId ?? '(starting)'} | turn ${this.gameState.turn} | lives ${this.gameState.lives} | gold ${this.gameState.gold} | level ${this.gameState.level} | score ${this.gameState.score} | high score ${this.gameState.highScore} | successful ads ${this.gameState.successAds} | failed ads ${this.gameState.failedAds}`,
     );
   }
 
@@ -92,10 +93,10 @@ export class GameRunner {
     if (!isBuying) {
       if (payload.score !== undefined) this.gameState.score = payload.score;
       if (payload.success) {
-        this.gameState.successAdv += 1;
+        this.gameState.successAds += 1;
         this.gameState.lastFailed = false;
       } else {
-        this.gameState.failedAdv += 1;
+        this.gameState.failedAds += 1;
         this.gameState.lastFailed = true;
       }
     }
@@ -116,7 +117,10 @@ export class GameRunner {
       }
 
       const ads = await this.api.getAds(gameId);
-      this.gameState.sortedAds = chooseAd(ads);
+      this.gameState.sortedAds = chooseAd(ads, this.gameState.tryEveryAd);
+      if (this.gameState.tryEveryAd && this.gameState.sortedAds.length > 0) {
+        this.gameState.tryEveryAd = false;
+      }
       const currentAdv = this.gameState.sortedAds[0] ?? null;
 
       const itemsToBuy = choosePurchase(shop, this.gameState);
@@ -148,7 +152,10 @@ export class GameRunner {
         }
       } else {
         this.logger.info('No actionable ads were returned while the game is still alive.');
-        this.gameState.turn++;
+        if (this.gameState.tryEveryAd) {
+          break;
+        }
+        this.gameState.tryEveryAd = true;
         continue;
       }
 

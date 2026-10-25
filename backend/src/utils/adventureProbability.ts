@@ -29,7 +29,7 @@ export function estimateSuccess(ad: Ad): number {
 }
 
 /** Rank live adventures by expected reward, preferring safer ads on ties. */
-export function chooseAd(ads: Ad[]): AdChoice[] {
+export function chooseAd(ads: Ad[], tryAll = false): AdChoice[] {
   if (!Array.isArray(ads)) throw new TypeError('Ads response must be an array.');
   return ads
     .filter(ad => ad?.adId && Number.isFinite(Number(ad.reward)) && Number.isFinite(Number(ad.expiresIn)) && ad.expiresIn >= 1)
@@ -37,6 +37,6 @@ export function chooseAd(ads: Ad[]): AdChoice[] {
       const successProbability = estimateSuccess(ad);
       return { ad, successProbability, expectedReward: successProbability * ad.reward };
     })
-    .filter(choice => choice.expectedReward > 0)
+    .filter(choice => choice.expectedReward > 0 || tryAll)
     .sort((a, b) => b.expectedReward - a.expectedReward || b.successProbability - a.successProbability);
 }

@@ -9,7 +9,8 @@ export interface GameState {
   highScore: number;
   turn: number;
   lastFailed: boolean;
-  failedAdv: number;
-  successAdv: number;
+  tryEveryAd: boolean;
+  failedAds: number;
+  successAds: number;
   sortedAds: AdChoice[];
 }
