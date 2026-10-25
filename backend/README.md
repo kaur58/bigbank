@@ -21,6 +21,14 @@ Set `MUGLOAR_API_URL` to use a compatible API endpoint or test server. It defaul
 npm test
 ```
 
+Generate terminal and HTML code coverage reports with:
+
+```sh
+npm run coverage
+```
+
+The HTML report is written to `coverage/index.html`.
+
 ## Design
 
 - `src/models/` holds the game API and internal state types, one model per file.

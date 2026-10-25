@@ -93,8 +93,8 @@ test('updates loss counters when an adventure resolves unsuccessfully', async ()
 
   const result = await new GameRunner({ api, logger }).play();
 
-  assert.equal(result.failedAdv, 1);
-  assert.equal(result.successAdv, 0);
+  assert.equal(result.failedAds, 1);
+  assert.equal(result.successAds, 0);
   assert.equal(result.lastFailed, true);
 });
 
