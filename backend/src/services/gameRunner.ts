@@ -1,4 +1,5 @@
 import type { ApiClient, GameState, Logger, StartGameResponse, TurnResponse } from '../models/index.js';
+import { GAME_RUNNER_DEFAULTS } from '../constants.js';
 import { ApiError } from '../clients/apiClient.js';
 import { chooseAd } from '../utils/adventureProbability.js';
 import { formatError } from '../utils/formatError.js';
@@ -38,9 +39,9 @@ export class GameRunner {
   constructor({
     api,
     logger = console,
-    maxTurns = 1000,
-    retryDelayMs = 500,
-    maxRetryDelayMs = 15_000,
+    maxTurns = GAME_RUNNER_DEFAULTS.MAX_TURNS,
+    retryDelayMs = GAME_RUNNER_DEFAULTS.RETRY_DELAY_MS,
+    maxRetryDelayMs = GAME_RUNNER_DEFAULTS.MAX_RETRY_DELAY_MS,
   }: { api: ApiClient; logger?: Logger; maxTurns?: number; retryDelayMs?: number; maxRetryDelayMs?: number }) {
     this.api = api;
     this.logger = logger;
@@ -61,7 +62,7 @@ export class GameRunner {
   private waitBeforeRetry(): Promise<void> {
     if (this.stopRequested) return Promise.resolve();
     this.consecutiveActionFailures += 1;
-    const delay = Math.min(this.retryDelayMs * 2 ** (this.consecutiveActionFailures - 1), this.maxRetryDelayMs);
+    const delay = Math.min(this.retryDelayMs * (this.consecutiveActionFailures - 1), this.maxRetryDelayMs);
     return new Promise(resolve => {
       const finish = (): void => {
         clearTimeout(timer);
@@ -98,6 +99,7 @@ export class GameRunner {
       } else {
         this.gameState.failedAds += 1;
         this.gameState.lastFailed = true;
+        this.logger.info(`Solved failed! ${payload.message}`);
       }
     }
   }
@@ -113,7 +115,8 @@ export class GameRunner {
 
     while (!this.stopRequested && this.gameState.lives > 0) {
       if (this.gameState.turn >= this.maxTurns) {
-        throw new Error(`Stopped after ${this.maxTurns} turns to prevent an infinite loop.`);
+        this.logger.info(`Stopped after ${this.maxTurns} turns to prevent an infinite loop.`);
+        break;
       }
 
       const ads = await this.api.getAds(gameId);

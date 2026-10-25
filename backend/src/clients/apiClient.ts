@@ -10,8 +10,7 @@ import type {
   StartGameResponse,
   TurnResponse,
 } from '../models/index.js';
-
-const DEFAULT_BASE_URL = process.env.MUGLOAR_API_URL ?? 'https://dragonsofmugloar.com/api/v2';
+import { DEFAULT_GAME_API_BASE_URL } from '../constants.js';
 
 export class ApiError extends Error {
   readonly status?: number;
@@ -34,7 +33,7 @@ export class GameApiClient {
   private readonly timeoutMs: number;
 
   constructor({
-    baseUrl = DEFAULT_BASE_URL,
+    baseUrl = process.env.MUGLOAR_API_URL ?? DEFAULT_GAME_API_BASE_URL,
     fetchImpl = fetch as unknown as FetchLike,
     timeoutMs = 10_000,
   }: { baseUrl?: string; fetchImpl?: FetchLike; timeoutMs?: number } = {}) {

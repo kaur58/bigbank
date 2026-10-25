@@ -26,6 +26,19 @@ test('normalizes wrapped ads and shop responses to typed arrays', async () => {
   assert.deepEqual((await api.getShop('g1')).map(item => item.id), ['hpot']);
 });
 
+test('accepts each documented ads and shop wrapper key', async () => {
+  const responses = [
+    new Response('{"ads":[{"adId":"a"}]}', { status: 200 }),
+    new Response('{"messages":[{"adId":"b"}]}', { status: 200 }),
+    new Response('{"shop":[{"id":"s1","name":"Item","cost":1}]}', { status: 200 }),
+  ];
+  const api = new GameApiClient({ fetchImpl: async () => responses.shift()! });
+
+  assert.deepEqual((await api.getAds('g1')).map(ad => ad.adId), ['a']);
+  assert.deepEqual((await api.getAds('g1')).map(ad => ad.adId), ['b']);
+  assert.deepEqual((await api.getShop('g1')).map(item => item.id), ['s1']);
+});
+
 test('maps upstream HTTP errors to ApiError and preserves the response body', async () => {
   const fetchImpl: FetchLike = async () => new Response('{"message":"ended"}', { status: 410 });
   const api = new GameApiClient({ fetchImpl });
@@ -60,12 +73,12 @@ test('uses the documented paths and POST methods for game actions', async () => 
   const api = new GameApiClient({ baseUrl: 'https://example.test/api/v2', fetchImpl });
 
   await api.startGame();
-  await api.solve('g1', 'a1');
-  await api.buy('g1', 'hpot');
+  await api.solve('game id', 'ad/id');
+  await api.buy('game id', 'hp ot');
 
   assert.deepEqual(requests, [
     { url: 'https://example.test/api/v2/game/start', method: 'POST' },
-    { url: 'https://example.test/api/v2/g1/solve/a1', method: 'POST' },
-    { url: 'https://example.test/api/v2/g1/shop/buy/hpot', method: 'POST' },
+    { url: 'https://example.test/api/v2/game%20id/solve/ad%2Fid', method: 'POST' },
+    { url: 'https://example.test/api/v2/game%20id/shop/buy/hp%20ot', method: 'POST' },
   ]);
 });
