@@ -1,6 +1,6 @@
 # Dragons of Mugloar player
 
-A Node.js console player that starts a game, evaluates available ads, optionally buys a healing potion when lives are low, and continues until the game ends.
+A Node.js console player that starts a game, ranks available ads, optionally buys shop items, and continues until the game ends.
 
 ## Requirements
 
@@ -30,4 +30,4 @@ npm test
 - `src/services/gameRunner.ts` coordinates game turns and logs progress.
 - `src/main.ts` is the command-line entry point and reports failures with a nonzero exit code.
 
-The adventure scorer maps known descriptive tiers to approximate probabilities, multiplies by the reward, and selects the highest scoring unexpired ad. The purchase helper considers the `wingpotmax` and `hpot` items, then considers other affordable items after a failed adventure.
+The API client normalizes wrapped ad and shop responses into arrays before the game runner sees them. The adventure scorer maps known descriptive tiers to approximate success probabilities and selects the highest expected reward among unexpired ads. Failed buy and solve calls are logged and retried with capped exponential backoff; Ctrl+C stops after the active API call and prints the current game state.

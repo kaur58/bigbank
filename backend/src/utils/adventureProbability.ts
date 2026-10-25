@@ -19,20 +19,24 @@ const TIER_PROBABILITY = new Map<string, number>([
 const TRAPS = ['super awesome diamond'];
 
 export function estimateSuccess(ad: Ad): number {
-  if (TRAPS.includes(ad.message.toLowerCase())) return 0;
+  const adventureText = ad.message.toLowerCase();
+  if (TRAPS.some(trap => adventureText.includes(trap.toLowerCase()))) return 0;
   const label = String(ad.probability ?? '').toLowerCase().trim();
   for (const [tier, probability] of TIER_PROBABILITY) {
-    if (label.includes(tier)) return probability * ad.reward;
+    if (label.includes(tier)) return probability;
   }
   return 0;
 }
 
-/** Return available adventures sorted by their estimated score. */
+/** Rank live adventures by expected reward, preferring safer ads on ties. */
 export function chooseAd(ads: Ad[]): AdChoice[] {
   if (!Array.isArray(ads)) throw new TypeError('Ads response must be an array.');
   return ads
     .filter(ad => ad?.adId && Number.isFinite(Number(ad.reward)) && Number.isFinite(Number(ad.expiresIn)) && ad.expiresIn >= 1)
-    .map(ad => ({ ad, probability: estimateSuccess(ad) }))
-    .filter(choice => choice.probability > 0)
-    .sort((a, b) => b.probability - a.probability);
+    .map(ad => {
+      const successProbability = estimateSuccess(ad);
+      return { ad, successProbability, expectedReward: successProbability * ad.reward };
+    })
+    .filter(choice => choice.expectedReward > 0)
+    .sort((a, b) => b.expectedReward - a.expectedReward || b.successProbability - a.successProbability);
 }

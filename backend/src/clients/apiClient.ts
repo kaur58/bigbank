@@ -1,11 +1,15 @@
-import type { AdsResponse } from '../models/adsResponse.js';
-import type { ApiErrorOptions } from '../models/apiErrorOptions.js';
-import type { ApiErrorResponse } from '../models/apiErrorResponse.js';
-import type { ApiRequestOptions } from '../models/apiRequestOptions.js';
-import type { FetchLike } from '../models/fetchLike.js';
-import type { ShopResponse } from '../models/shopResponse.js';
-import type { StartGameResponse } from '../models/startGameResponse.js';
-import type { TurnResponse } from '../models/turnResponse.js';
+import type {
+  Ad,
+  AdsResponse,
+  ApiErrorOptions,
+  ApiErrorResponse,
+  ApiRequestOptions,
+  FetchLike,
+  ShopItem,
+  ShopResponse,
+  StartGameResponse,
+  TurnResponse,
+} from '../models/index.js';
 
 const DEFAULT_BASE_URL = process.env.MUGLOAR_API_URL ?? 'https://dragonsofmugloar.com/api/v2';
 
@@ -74,16 +78,27 @@ export class GameApiClient {
   startGame(): Promise<StartGameResponse> {
     return this.request('/game/start', { method: 'POST' });
   }
-  getAds(gameId: string): Promise<AdsResponse> {
-    return this.request(`/${encodeURIComponent(gameId)}/messages`);
+  async getAds(gameId: string): Promise<Ad[]> {
+    const response = await this.request<AdsResponse>(`/${encodeURIComponent(gameId)}/messages`);
+    return this.unwrapList(response, ['adventures', 'ads', 'messages'], 'ads');
   }
-  getShop(gameId: string): Promise<ShopResponse> {
-    return this.request(`/${encodeURIComponent(gameId)}/shop`);
+  async getShop(gameId: string): Promise<ShopItem[]> {
+    const response = await this.request<ShopResponse>(`/${encodeURIComponent(gameId)}/shop`);
+    return this.unwrapList(response, ['shoppingList', 'shop'], 'shop');
   }
   solve(gameId: string, adId: string): Promise<TurnResponse> {
     return this.request(`/${encodeURIComponent(gameId)}/solve/${encodeURIComponent(adId)}`, { method: 'POST' });
   }
   buy(gameId: string, itemId: string): Promise<TurnResponse> {
     return this.request(`/${encodeURIComponent(gameId)}/shop/buy/${encodeURIComponent(itemId)}`, { method: 'POST' });
+  }
+
+  private unwrapList<T>(payload: T[] | Record<string, T[] | undefined>, keys: string[], label: string): T[] {
+    if (Array.isArray(payload)) return payload;
+    for (const key of keys) {
+      const list = payload[key];
+      if (Array.isArray(list)) return list;
+    }
+    throw new ApiError(`Game API returned an invalid ${label} response.`);
   }
 }

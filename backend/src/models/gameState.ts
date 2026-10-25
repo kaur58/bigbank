@@ -12,5 +12,4 @@ export interface GameState {
   failedAdv: number;
   successAdv: number;
   sortedAds: AdChoice[];
-  currentAdv: AdChoice | null;
 }
