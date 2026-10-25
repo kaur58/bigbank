@@ -7,6 +7,12 @@ A Node.js console player that starts a game, ranks available ads, optionally buy
 - Node.js 20 or newer (uses built-in `fetch`, `node:test`, and `AbortSignal.timeout`)
 - Internet access to the Dragons of Mugloar API
 
+## Install
+
+```sh
+npm install
+```
+
 ## Run
 
 ```sh
@@ -38,7 +44,10 @@ The HTML report is written to `coverage/index.html`.
 - `src/services/gameRunner.ts` coordinates game turns and logs progress.
 - `src/main.ts` is the command-line entry point and reports failures with a nonzero exit code.
 
-The API client normalizes wrapped ad and shop responses into arrays before the game runner sees them. The adventure scorer maps known descriptive tiers to approximate success probabilities and selects the highest expected reward among unexpired ads. Failed buy and solve calls are logged and retried with capped exponential backoff; Ctrl+C stops after the active API call and prints the current game state.
+The API client normalizes wrapped ad and shop responses into arrays before the game runner sees them. 
+The adventure scorer maps known descriptive tiers to approximate success probabilities and selects the highest expected reward among unexpired ads. 
+Failed buy and solve calls are logged.
+Ctrl+C stops after the active API call and prints the current game state.
 
 ## Future plans
 - better logic for buying item maybe
