@@ -14,9 +14,9 @@ function probabilityLabel(value: number) {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-10 grid place-items-center bg-black/80 p-5 backdrop-blur-sm" @click.self="emit('close')"
+  <div class="fixed inset-0 z-10 overflow-y-auto bg-black/80 backdrop-blur-sm sm:flex sm:items-center sm:justify-center sm:p-5" @click.self="emit('close')"
     @keydown.esc="emit('close')">
-    <section class="relative w-full max-w-[480px] border border-[#53513d] bg-forest-800 px-6 py-8 shadow-2xl sm:px-10"
+    <section class="relative min-h-screen w-full overflow-y-auto border-0 bg-forest-800 px-6 pb-8 pt-14 shadow-2xl sm:min-h-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-full sm:max-w-[480px] sm:border sm:px-10 sm:py-8"
       role="dialog" aria-modal="true" :aria-label="isAdventure ? 'Adventure details' : 'Shop item details'">
       <button class="absolute right-4 top-3 bg-transparent text-2xl text-[#9c9d8c]" aria-label="Close dialog"
         @click="emit('close')">×</button>

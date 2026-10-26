@@ -41,13 +41,6 @@ const emit = defineEmits<{ start: [autoplay: boolean] }>()
         @click="emit('start', true)">or let the autoplayer take the reins</button>
       <p v-if="error" class="mt-4 border border-[#76483e] bg-[#351f1c] px-3.5 py-3 text-xs text-[#e7a294]">{{ error }}
       </p>
-      <div
-        class="absolute bottom-7 left-[9vw] right-[9vw] flex justify-between font-mono text-[9px] tracking-wide text-[#777a6d] md:left-[10vw] md:right-[5vw]">
-        <span>EST. IN THE REALM OF MUGLOAR</span><span>NO TWO QUESTS ALIKE</span>
-      </div>
     </div>
-    <div
-      class="absolute bottom-4 right-[18px] z-10 font-mono text-[10px] tracking-wide text-[#8e8d7e] md:bottom-7 md:right-[35px]">
-      01 <span class="text-gold">—</span> ADVENTURE AWAITS</div>
   </section>
 </template>

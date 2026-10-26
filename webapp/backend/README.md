@@ -20,11 +20,11 @@ Successful game operations return typed JSON data from the Dragons API. API erro
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `POST` | `/api/games` | Start a game |
-| `GET` | `/api/games/:gameId/adventures` | Get available adventures |
-| `POST` | `/api/games/:gameId/adventures/:adventureId/solve` | Solve an adventure |
-| `GET` | `/api/games/:gameId/shopping-items` | Get available shopping items |
-| `POST` | `/api/games/:gameId/shopping-items/:itemId/purchase` | Buy an item |
+| `POST` | `/api/game` | Start a game |
+| `GET` | `/api/game/:gameId/adventures` | Get available adventures |
+| `POST` | `/api/game/:gameId/adventures/:adventureId/solve` | Solve an adventure |
+| `GET` | `/api/game/:gameId/shop` | Get available shopping items |
+| `POST` | `/api/game/:gameId/shop/:itemId/buy` | Buy an item |
 | `GET` | `/health` | Check whether this service is running |
 
 POST routes trigger their corresponding game operation; the Dragons API client supplies the required upstream request details.

@@ -73,9 +73,9 @@ const emit = defineEmits<{
     </nav>
 
     <div class="grid grid-cols-1 items-stretch gap-3 md:grid-cols-2 md:gap-[18px]">
-      <AdventuresList :adventures="adventures" :disabled="loading" :hidden="activeTab !== 'adventures'"
+      <AdventuresList :adventures="adventures" :disabled="loading || autoplay" :hidden="activeTab !== 'adventures'"
         @select="emit('selectAdventure', $event)" />
-      <ShopList :items="shopItems" :gold="stats.gold" :disabled="loading" :hidden="activeTab !== 'shop'"
+      <ShopList :items="shopItems" :gold="stats.gold" :disabled="loading || autoplay" :hidden="activeTab !== 'shop'"
         @select="emit('selectItem', $event)" />
     </div>
   </section>

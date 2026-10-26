@@ -48,6 +48,14 @@ Run the Vitest test suite:
 npm test
 ```
 
+## Type checking
+
+Vue single-file components and TypeScript files are checked with `vue-tsc` and TypeScript 6:
+
+```sh
+npm run typecheck
+```
+
 ## Production build
 
 Type-check the app and create the production bundle:

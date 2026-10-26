@@ -28,7 +28,7 @@ test('starts a game and forwards the upstream response', async () => {
     return fakeResponse({ gameId: 'abc', lives: 3 });
   };
   await withServer(fetchImpl, async (base) => {
-    const response = await fetch(`${base}/api/games`, { method: 'POST' });
+    const response = await fetch(`${base}/api/game`, { method: 'POST' });
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { gameId: 'abc', lives: 3 });
   });
@@ -43,10 +43,10 @@ test('maps adventure and shopping routes to game service routes', async () => {
     return fakeResponse({ ok: true });
   };
   await withServer(fetchImpl, async (base) => {
-    await fetch(`${base}/api/games/game-1/adventures`);
-    await fetch(`${base}/api/games/game-1/adventures/ad-2/solve`, { method: 'POST' });
-    await fetch(`${base}/api/games/game-1/shopping-items`);
-    await fetch(`${base}/api/games/game-1/shopping-items/item-3/purchase`, { method: 'POST' });
+    await fetch(`${base}/api/game/game-1/adventures`);
+    await fetch(`${base}/api/game/game-1/adventures/ad-2/solve`, { method: 'POST' });
+    await fetch(`${base}/api/game/game-1/shop`);
+    await fetch(`${base}/api/game/game-1/shop/item-3/buy`, { method: 'POST' });
   });
   assert.deepEqual(calls, [
     'https://game.test/api/v2/game-1/messages',
@@ -63,7 +63,7 @@ test('reports malformed JSON without calling the upstream service', async () => 
     return fakeResponse({});
   };
   await withServer(fetchImpl, async (base) => {
-    const response = await fetch(`${base}/api/games`, {
+    const response = await fetch(`${base}/api/game`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: '{'
@@ -77,7 +77,7 @@ test('reports malformed JSON without calling the upstream service', async () => 
 test('returns a JSON 502 when the game service cannot be reached', async () => {
   const fetchImpl: typeof fetch = async () => { throw new Error('network failure'); };
   await withServer(fetchImpl, async (base) => {
-    const response = await fetch(`${base}/api/games/g1/adventures`);
+    const response = await fetch(`${base}/api/game/g1/adventures`);
     assert.equal(response.status, 502);
     const body = await response.json() as { error: string };
     assert.match(body.error, /Could not reach game API/);
@@ -90,7 +90,7 @@ test('returns a 502 when the upstream service responds with invalid JSON', async
     headers: { 'content-type': 'application/json' }
   });
   await withServer(fetchImpl, async (base) => {
-    const response = await fetch(`${base}/api/games`, { method: 'POST' });
+    const response = await fetch(`${base}/api/game`, { method: 'POST' });
     assert.equal(response.status, 502);
     assert.deepEqual(await response.json(), { error: 'Game API returned invalid JSON.' });
   });
@@ -102,7 +102,7 @@ test('preserves upstream error status and details', async () => {
     headers: { 'content-type': 'application/json' }
   });
   await withServer(fetchImpl, async (base) => {
-    const response = await fetch(`${base}/api/games/missing/adventures`);
+    const response = await fetch(`${base}/api/game/missing/adventures`);
     assert.equal(response.status, 404);
     assert.deepEqual(await response.json(), {
       error: 'Unknown game',

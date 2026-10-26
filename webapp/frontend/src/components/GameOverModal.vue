@@ -4,9 +4,9 @@ defineProps<{ stats: GameStats }>()
 defineEmits<{ close: [] }>()
 </script>
 <template>
-  <div class="fixed inset-0 z-20 grid place-items-center bg-black/80 p-5 backdrop-blur-sm">
+  <div class="fixed inset-0 z-20 overflow-y-auto bg-black/80 backdrop-blur-sm sm:flex sm:items-center sm:justify-center sm:p-5">
     <section
-      class="w-full max-w-[480px] border border-[#53513d] bg-forest-800 px-6 py-8 text-center shadow-2xl sm:px-10"
+      class="min-h-screen w-full overflow-y-auto border-0 bg-forest-800 px-6 pb-8 pt-12 text-center shadow-2xl sm:min-h-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-full sm:max-w-[480px] sm:border sm:px-10 sm:py-8"
       role="dialog" aria-modal="true" aria-labelledby="game-over-title">
       <div
         class="mx-auto mb-5 grid h-[46px] w-[46px] place-items-center border border-[#65443a] font-display text-2xl text-[#b97c68]">
