@@ -61,6 +61,56 @@ test('does not choose known trap messages', () => {
   assert.equal(estimateSuccess(trap), 0);
 });
 
+test('decodes encrypted type 1 ad fields before ranking', () => {
+  const encryptedAd: Ad = {
+    adId: Buffer.from('decoded-ad').toString('base64'),
+    message: Buffer.from('A normal quest').toString('base64'),
+    reward: 20,
+    expiresIn: 2,
+    probability: Buffer.from('Sure thing').toString('base64'),
+    encrypted: 1,
+  };
+
+  const [choice] = chooseAd([encryptedAd]);
+
+  assert.ok(choice);
+  assert.equal(choice.ad.adId, 'decoded-ad');
+  assert.equal(choice.ad.message, 'A normal quest');
+  assert.equal(choice.ad.probability, 'Sure thing');
+  assert.equal(choice.successProbability, 0.98);
+  assert.equal(choice.expectedReward, 9.8);
+  assert.equal(encryptedAd.adId, Buffer.from('decoded-ad').toString('base64'));
+});
+
+test('decodes encrypted type 2 ad fields with ROT13 before ranking', () => {
+  const ad: Ad = {
+    adId: 'qrpbqrq-nq',
+    message: 'N abezny dhrfg',
+    reward: 20,
+    expiresIn: 2,
+    probability: 'Fher guvat',
+    encrypted: 2,
+  };
+
+  const [choice] = chooseAd([ad]);
+
+  assert.ok(choice);
+  assert.equal(choice.ad.adId, 'decoded-ad');
+  assert.equal(choice.ad.message, 'A normal quest');
+  assert.equal(choice.ad.probability, 'Sure thing');
+  assert.equal(choice.successProbability, 0.98);
+  assert.equal(choice.expectedReward, 9.8);
+  assert.equal(ad.adId, 'qrpbqrq-nq');
+});
+
+test('leaves unrecognized encryption markers unchanged', () => {
+  const ad = { ...makeAd('ad-id', 'Sure thing'), encrypted: 3 } as Ad;
+  const [choice] = chooseAd([ad], true);
+  assert.ok(choice);
+  assert.equal(choice.ad.adId, 'ad-id');
+  assert.equal(choice.ad.probability, 'Sure thing');
+});
+
 test('try-all mode includes zero-probability ads but still excludes expired ads', () => {
   const choices = chooseAd([
     makeAd('unknown', 'unlisted'),
@@ -78,7 +128,7 @@ test('formats API errors with status and handles ordinary and non-error values',
   assert.equal(formatError('unexpected value'), 'unexpected value');
 });
 
-test('buys priority items first and up to the extra item limit after a failed adventure', () => {
+test('buys priority items first and counts them toward the per-turn purchase limit', () => {
   const shop: ShopItem[] = [
     { id: 'hpot', name: 'Healing Potion', cost: 50 },
     { id: 'wingpotmax', name: 'Wing Potion', cost: 300 },
@@ -86,7 +136,7 @@ test('buys priority items first and up to the extra item limit after a failed ad
     { id: 'large', name: 'Large upgrade', cost: 350 },
     { id: 'too-large', name: 'Too large', cost: 500 },
   ];
-  assert.deepEqual(choosePurchase(shop, { lives: 3, gold: 800, lastFailed: true }).map(item => item.id), ['wingpotmax', 'hpot', 'small']);
+  assert.deepEqual(choosePurchase(shop, { lives: 3, gold: 800, lastFailed: true }).map(item => item.id), ['wingpotmax', 'hpot']);
   assert.deepEqual(choosePurchase(shop, { lives: 3, gold: 450, lastFailed: false }).map(item => item.id), ['hpot']);
 });
 

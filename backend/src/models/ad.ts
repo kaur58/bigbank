@@ -3,6 +3,6 @@ export interface Ad {
   message: string;
   reward: number;
   expiresIn: number;
-  encrypted?: string | null;
+  encrypted?: string | number;
   probability: string;
 }

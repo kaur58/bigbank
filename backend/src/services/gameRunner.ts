@@ -119,13 +119,6 @@ export class GameRunner {
         break;
       }
 
-      const ads = await this.api.getAds(gameId);
-      this.gameState.sortedAds = chooseAd(ads, this.gameState.tryEveryAd);
-      if (this.gameState.tryEveryAd && this.gameState.sortedAds.length > 0) {
-        this.gameState.tryEveryAd = false;
-      }
-      const currentAdv = this.gameState.sortedAds[0] ?? null;
-
       const itemsToBuy = choosePurchase(shop, this.gameState);
       for (const item of itemsToBuy) {
         if (this.stopRequested) break;
@@ -140,6 +133,13 @@ export class GameRunner {
           }
         }
       }
+
+      const ads = await this.api.getAds(gameId);
+      this.gameState.sortedAds = chooseAd(ads, this.gameState.tryEveryAd);
+      if (this.gameState.tryEveryAd && this.gameState.sortedAds.length > 0) {
+        this.gameState.tryEveryAd = false;
+      }
+      const currentAdv = this.gameState.sortedAds[0] ?? null;
 
       if (this.stopRequested) break;
 
