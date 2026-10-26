@@ -11,7 +11,8 @@ export const useGameStore = defineStore('game', () => {
   const loading = ref(false)
   const error = ref('')
   const lastMessage = ref('')
-  const isOver = computed(() => !!gameId.value && stats.value.lives <= 0)
+  const endedByPlayer = ref(false)
+  const isOver = computed(() => !!gameId.value && (stats.value.lives <= 0 || endedByPlayer.value))
 
   function setStats(next: Partial<GameStats>) {
     stats.value = { ...stats.value, ...next }
@@ -31,6 +32,7 @@ export const useGameStore = defineStore('game', () => {
     loading.value = true
     error.value = ''
     lastMessage.value = ''
+    endedByPlayer.value = false
     try {
       const result = await gameApi.start()
       gameId.value = result.gameId
@@ -76,13 +78,18 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  function endGame() {
+    if (gameId.value) endedByPlayer.value = true
+  }
+
   function quitGame() {
     gameId.value = null
+    endedByPlayer.value = false
     adventures.value = []
     shopItems.value = []
     error.value = ''
     lastMessage.value = ''
   }
 
-  return { gameId, stats, adventures, shopItems, loading, error, lastMessage, isOver, startGame, solve, buy, quitGame }
+  return { gameId, stats, adventures, shopItems, loading, error, lastMessage, isOver, startGame, solve, buy, endGame, quitGame }
 })

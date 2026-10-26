@@ -18,13 +18,11 @@ defineEmits<{ close: [] }>()
         adventurer leaves a story behind.</p>
       <div class="py-4"><small class="mb-1 block font-mono text-[8px] tracking-widest text-[#818475]">FINAL
           SCORE</small><strong class="font-display text-6xl text-gold-soft">{{ stats.score }}</strong></div>
-      <div class="mb-6 grid grid-cols-3 border-y border-[#35392e] py-4">
+      <div class="mb-6 grid grid-cols-2 border-y border-[#35392e] py-4">
         <div><small class="mb-2 block font-mono text-[8px] tracking-widest text-[#818475]">GOLD</small><b
             class="font-mono text-[10px] text-[#d4c59a]">◈ {{ stats.gold }}</b></div>
-        <div><small class="mb-2 block font-mono text-[8px] tracking-widest text-[#818475]">LEVEL</small><b
-            class="font-mono text-[10px] text-[#d4c59a]">{{ stats.level }}</b></div>
-        <div><small class="mb-2 block font-mono text-[8px] tracking-widest text-[#818475]">HIGH SCORE</small><b
-            class="font-mono text-[10px] text-[#d4c59a]">✧ {{ stats.highScore }}</b></div>
+        <div><small class="mb-2 block font-mono text-[8px] tracking-widest text-[#818475]">LIVES</small><b
+            class="font-mono text-[10px] text-[#d4c59a]">{{ stats.lives }}</b></div>
       </div>
       <button
         class="flex w-full items-center justify-between bg-gold px-5 py-[17px] font-mono text-[10px] tracking-wider text-[#191a13] hover:bg-[#dcc18e]"

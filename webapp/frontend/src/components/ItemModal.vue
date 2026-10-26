@@ -8,9 +8,8 @@ const isAdventure = computed(() => props.kind === 'adventure')
 const adventure = computed(() => props.item as Ad)
 const shopItem = computed(() => props.item as ShopItem)
 const disabled = computed(() => props.loading || (!isAdventure.value && props.gold < shopItem.value.cost))
-function probabilityLabel(value: string) {
-  const number = Number(value)
-  return Number.isFinite(number) && number <= 1 ? `${Math.round(number * 100)}%` : value
+function probabilityLabel(value: number) {
+  return Number.isFinite(value) && value <= 1 ? `${Math.round(value * 100)}%` : value
 }
 </script>
 
@@ -36,7 +35,9 @@ function probabilityLabel(value: string) {
           <div><small class="mb-2 block font-mono text-[8px] tracking-widest text-[#818475]">REWARD</small><b
               class="font-mono text-[10px] text-[#d1bf95]">◈ {{ adventure.reward }} GOLD</b></div>
           <div><small class="mb-2 block font-mono text-[8px] tracking-widest text-[#818475]">SUCCESS CHANCE</small><b
-              class="font-mono text-[10px] text-[#d1bf95]">{{ probabilityLabel(adventure.probability) }}</b></div>
+              class="font-mono text-[10px] text-[#d1bf95]">{{ adventure.probability }} ({{
+                probabilityLabel(adventure.successProbability) }})</b>
+          </div>
         </div>
       </template>
       <template v-else>

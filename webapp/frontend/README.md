@@ -70,3 +70,9 @@ npm run preview
 - `src/types/game.ts` defines the API and game data models.
 - `src/style.css` loads Tailwind's layers; component styling is written with Tailwind utility classes.
 - `public/` contains static assets such as the favicon.
+
+## Autoplay
+
+Backend return calculated probabilties to all adventures. 
+Autoplay takes highest probabilty and tries to solve it. 
+Also it buy healt if lives are low and other items if there is gold for it but always leaves gold for one healing potion
