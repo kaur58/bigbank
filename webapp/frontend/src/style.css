@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { @apply bg-forest text-parchment font-sans antialiased; }
+  body { @apply m-0 min-w-[320px]; }
+  button { @apply cursor-pointer; }
+  button:disabled { @apply cursor-wait opacity-50; }
+}
