@@ -81,6 +81,6 @@ npm run preview
 
 ## Autoplay
 
-Backend return calculated probabilties to all adventures. 
-Autoplay takes highest probabilty and tries to solve it. 
-Also it buy healt if lives are low and other items if there is gold for it but always leaves gold for one healing potion
+Backend return calculated probabilities to all adventures. 
+Autoplay takes highest probability and tries to solve it. 
+Also it buy health if lives are low and other items if there is gold for it but always leaves gold for one healing potion
