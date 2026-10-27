@@ -107,6 +107,7 @@ export class GameRunner {
     this.gameState = initialState(await this.api.startGame());
     const gameId = this.gameState.gameId!;
     this.logger.info(`Started game ${gameId} (lives: ${this.gameState.lives}, gold: ${this.gameState.gold}).`);
+
     if (this.stopRequested) {
       this.logCurrentState();
       return this.gameState;

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { GameRunner } from '../src/services/gameRunner.js';
 import type { ApiClient, Logger } from '../src/models/index.js';
 
-const logger: Logger = { info() {} };
+const logger: Logger = { info() { } };
 
 function makeApi(overrides: Partial<ApiClient> = {}): ApiClient {
   return {

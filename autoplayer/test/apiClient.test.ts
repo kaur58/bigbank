@@ -14,29 +14,15 @@ test('encodes identifiers and parses JSON', async () => {
   assert.match(requested, /game%20id\/messages$/);
 });
 
-test('normalizes wrapped ads and shop responses to typed arrays', async () => {
+test('rejects wrapped ads and shop responses because endpoints must return arrays', async () => {
   const responses = [
-    new Response('{"adventures":[{"adId":"a","message":"Quest","reward":10,"expiresIn":2,"probability":"Sure thing"}]}', { status: 200 }),
-    new Response('{"shoppingList":[{"id":"hpot","name":"Healing Potion","cost":50}]}', { status: 200 }),
-  ];
-  const fetchImpl: FetchLike = async () => responses.shift()!;
-  const api = new GameApiClient({ fetchImpl });
-
-  assert.deepEqual((await api.getAds('g1')).map(ad => ad.adId), ['a']);
-  assert.deepEqual((await api.getShop('g1')).map(item => item.id), ['hpot']);
-});
-
-test('accepts each documented ads and shop wrapper key', async () => {
-  const responses = [
-    new Response('{"ads":[{"adId":"a"}]}', { status: 200 }),
-    new Response('{"messages":[{"adId":"b"}]}', { status: 200 }),
-    new Response('{"shop":[{"id":"s1","name":"Item","cost":1}]}', { status: 200 }),
+    new Response('{"adventures":[{"adId":"a"}]}', { status: 200 }),
+    new Response('{"shoppingList":[{"id":"hpot"}]}', { status: 200 }),
   ];
   const api = new GameApiClient({ fetchImpl: async () => responses.shift()! });
 
-  assert.deepEqual((await api.getAds('g1')).map(ad => ad.adId), ['a']);
-  assert.deepEqual((await api.getAds('g1')).map(ad => ad.adId), ['b']);
-  assert.deepEqual((await api.getShop('g1')).map(item => item.id), ['s1']);
+  await assert.rejects(api.getAds('g1'), error => error instanceof ApiError && error.message === 'Game API returned an invalid response.');
+  await assert.rejects(api.getShop('g1'), error => error instanceof ApiError && error.message === 'Game API returned an invalid response.');
 });
 
 test('maps upstream HTTP errors to ApiError and preserves the response body', async () => {
@@ -45,7 +31,7 @@ test('maps upstream HTTP errors to ApiError and preserves the response body', as
   await assert.rejects(api.startGame(), error => error instanceof ApiError && error.status === 410 && error.message === 'ended' && error.response?.message === 'ended');
 });
 
-test('reports malformed response JSON and invalid list wrappers as ApiErrors', async () => {
+test('reports malformed response JSON and invalid list responses as ApiErrors', async () => {
   const malformedJson = new GameApiClient({
     fetchImpl: async () => new Response('not-json', { status: 200 }),
   });
@@ -54,7 +40,7 @@ test('reports malformed response JSON and invalid list wrappers as ApiErrors', a
   const malformedWrapper = new GameApiClient({
     fetchImpl: async () => new Response('{}', { status: 200 }),
   });
-  await assert.rejects(malformedWrapper.getAds('g1'), error => error instanceof ApiError && error.message.includes('invalid ads response'));
+  await assert.rejects(malformedWrapper.getAds('g1'), error => error instanceof ApiError && error.message === 'Game API returned an invalid response.');
 });
 
 test('maps network failures to ApiError', async () => {

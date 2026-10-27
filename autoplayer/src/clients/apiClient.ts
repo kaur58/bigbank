@@ -26,7 +26,7 @@ export class ApiError extends Error {
   }
 }
 
-/** HTTP boundary for the upstream game API; accepts an injected fetch for tests. */
+/** accepts an injected fetch for tests. */
 export class GameApiClient {
   private readonly baseUrl: string;
   private readonly fetchImpl: FetchLike;
@@ -37,7 +37,7 @@ export class GameApiClient {
     fetchImpl = fetch as unknown as FetchLike,
     timeoutMs = 10_000,
   }: { baseUrl?: string; fetchImpl?: FetchLike; timeoutMs?: number } = {}) {
-    this.baseUrl = baseUrl.replace(/\/$/, '');
+    this.baseUrl = baseUrl;
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
   }
@@ -79,11 +79,11 @@ export class GameApiClient {
   }
   async getAds(gameId: string): Promise<Ad[]> {
     const response = await this.request<AdsResponse>(`/${encodeURIComponent(gameId)}/messages`);
-    return this.unwrapList(response, ['adventures', 'ads', 'messages'], 'ads');
+    return this.unwrapList(response);
   }
   async getShop(gameId: string): Promise<ShopItem[]> {
     const response = await this.request<ShopResponse>(`/${encodeURIComponent(gameId)}/shop`);
-    return this.unwrapList(response, ['shoppingList', 'shop'], 'shop');
+    return this.unwrapList(response);
   }
   solve(gameId: string, adId: string): Promise<TurnResponse> {
     return this.request(`/${encodeURIComponent(gameId)}/solve/${encodeURIComponent(adId)}`, { method: 'POST' });
@@ -92,12 +92,8 @@ export class GameApiClient {
     return this.request(`/${encodeURIComponent(gameId)}/shop/buy/${encodeURIComponent(itemId)}`, { method: 'POST' });
   }
 
-  private unwrapList<T>(payload: T[] | Record<string, T[] | undefined>, keys: string[], label: string): T[] {
+  private unwrapList<T>(payload: T[] | Record<string, T[] | undefined>): T[] {
     if (Array.isArray(payload)) return payload;
-    for (const key of keys) {
-      const list = payload[key];
-      if (Array.isArray(list)) return list;
-    }
-    throw new ApiError(`Game API returned an invalid ${label} response.`);
+    throw new ApiError(`Game API returned an invalid response.`);
   }
 }
