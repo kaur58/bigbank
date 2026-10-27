@@ -55,7 +55,7 @@ The adventure scorer maps known descriptive tiers to approximate success probabi
 Failed buy and solve calls are logged.
 Ctrl+C stops after the active API call and prints the current game state.
 
-## Improvments
+## Improvements
 - better logic for buying item maybe
 - better logic for adventure probability calculations
 - maybe add some logic if 2 adventures fail in a row to then buy something
