@@ -19,6 +19,12 @@ npm install
 npm start
 ```
 
+Create a local environment file from the example:
+
+```sh
+cp .env.example .env
+```
+
 Set `MUGLOAR_API_URL` to use a compatible API endpoint or test server. It defaults to `https://dragonsofmugloar.com/api/v2`.
 
 ## Tests
@@ -49,7 +55,7 @@ The adventure scorer maps known descriptive tiers to approximate success probabi
 Failed buy and solve calls are logged.
 Ctrl+C stops after the active API call and prints the current game state.
 
-## Future plans
+## Improvments
 - better logic for buying item maybe
 - better logic for adventure probability calculations
 - maybe add some logic if 2 adventures fail in a row to then buy something

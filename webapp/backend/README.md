@@ -12,6 +12,12 @@ Requires Node.js 18 or newer. Install dependencies with `npm install` before sta
 npm start
 ```
 
+Create a local environment file from the example:
+
+```sh
+cp .env.example .env
+```
+
 The service listens on port `3000` by default. Set `PORT` to change it, or `GAME_API_URL` to use a different upstream API base URL (default: `https://dragonsofmugloar.com/api/v2`).
 
 ## Endpoints
