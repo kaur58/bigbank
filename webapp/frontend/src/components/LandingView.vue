@@ -1,5 +1,6 @@
 <script setup lang="ts">
 defineProps<{ loading: boolean; error: string }>()
+
 const emit = defineEmits<{ start: [autoplay: boolean] }>()
 </script>
 

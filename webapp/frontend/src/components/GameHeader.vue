@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import StatItem from './StatItem.vue'
 import type { GameStats } from '../types/game'
+
 defineProps<{ stats: GameStats }>()
+
 const emit = defineEmits<{ quit: [] }>()
 </script>
 <template>

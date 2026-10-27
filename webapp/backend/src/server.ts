@@ -36,15 +36,12 @@ export function createApp({
   app.use((request, response, next) => {
     response.set({
       'access-control-allow-origin': '*',
-      'access-control-allow-methods': 'GET, POST, OPTIONS',
+      'access-control-allow-methods': 'GET, POST',
       'access-control-allow-headers': 'content-type'
     });
-    if (request.method === 'OPTIONS') {
-      response.sendStatus(204);
-      return;
-    }
     next();
   });
+  app.options('*', (request, response) => response.sendStatus(204));
   app.use(express.json({ limit: MAX_BODY_BYTES }));
 
   function sendServiceResult(result: unknown, response: ExpressResponse): void {

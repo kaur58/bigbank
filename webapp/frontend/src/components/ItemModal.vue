@@ -3,20 +3,25 @@ import { computed } from 'vue'
 import type { Ad, ShopItem } from '../types/game'
 
 const props = defineProps<{ item: Ad | ShopItem; kind: 'adventure' | 'shop'; gold: number; loading: boolean }>()
+
 const emit = defineEmits<{ close: []; confirm: [] }>()
+
 const isAdventure = computed(() => props.kind === 'adventure')
 const adventure = computed(() => props.item as Ad)
 const shopItem = computed(() => props.item as ShopItem)
 const disabled = computed(() => props.loading || (!isAdventure.value && props.gold < shopItem.value.cost))
+
 function probabilityLabel(value: number) {
   return Number.isFinite(value) && value <= 1 ? `${Math.round(value * 100)}%` : value
 }
 </script>
 
 <template>
-  <div class="fixed inset-0 z-10 overflow-y-auto bg-black/80 backdrop-blur-sm sm:flex sm:items-center sm:justify-center sm:p-5" @click.self="emit('close')"
-    @keydown.esc="emit('close')">
-    <section class="relative min-h-screen w-full overflow-y-auto border-0 bg-forest-800 px-6 pb-8 pt-14 shadow-2xl sm:min-h-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-full sm:max-w-[480px] sm:border sm:px-10 sm:py-8"
+  <div
+    class="fixed inset-0 z-10 overflow-y-auto bg-black/80 backdrop-blur-sm sm:flex sm:items-center sm:justify-center sm:p-5"
+    @click.self="emit('close')" @keydown.esc="emit('close')">
+    <section
+      class="relative min-h-screen w-full overflow-y-auto border-0 bg-forest-800 px-6 pb-8 pt-14 shadow-2xl sm:min-h-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-full sm:max-w-[480px] sm:border sm:px-10 sm:py-8"
       role="dialog" aria-modal="true" :aria-label="isAdventure ? 'Adventure details' : 'Shop item details'">
       <button class="absolute right-4 top-3 bg-transparent text-2xl text-[#9c9d8c]" aria-label="Close dialog"
         @click="emit('close')">×</button>

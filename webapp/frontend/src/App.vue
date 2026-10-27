@@ -28,6 +28,7 @@ async function startGame(withAutoplay: boolean) {
   await game.startGame()
   if (game.gameId && withAutoplay) autoplay.value = true
 }
+
 async function confirmSelection() {
   if (!selected.value) return
   const item = selected.value
@@ -35,11 +36,13 @@ async function confirmSelection() {
   if (selectedKind.value === 'adventure') await game.solve(item as Ad)
   else await game.buy(item as ShopItem)
 }
+
 function stopAutoplay() {
   autoplay.value = false
   botNote.value = ''
   if (botTimer) clearTimeout(botTimer)
 }
+
 function quitGame() {
   stopAutoplay()
   game.quitGame()

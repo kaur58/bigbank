@@ -15,6 +15,7 @@ defineProps<{
   botNote: string
   activeTab: 'adventures' | 'shop'
 }>()
+
 const emit = defineEmits<{
   quit: []
   toggleAutoplay: []

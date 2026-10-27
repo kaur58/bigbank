@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { ShopItem } from '../types/game'
 import ShopItemCard from './ShopItemCard.vue'
+
 defineProps<{ items: ShopItem[]; gold: number; disabled?: boolean; hidden?: boolean }>()
+
 defineEmits<{ select: [item: ShopItem] }>()
 </script>
 <template>

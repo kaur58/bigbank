@@ -36,6 +36,18 @@ test('starts a game and forwards the upstream response', async () => {
   assert.equal(call?.options?.method, 'POST');
 });
 
+test('supports CORS preflight for API routes', async () => {
+  await withServer(async () => fakeResponse({}), async (base) => {
+    const response = await fetch(`${base}/api/game`, {
+      method: 'OPTIONS',
+      headers: { 'access-control-request-method': 'POST' }
+    });
+    assert.equal(response.status, 204);
+    assert.equal(response.headers.get('access-control-allow-origin'), '*');
+    assert.equal(response.headers.get('access-control-allow-methods'), 'GET, POST');
+  });
+});
+
 test('maps adventure and shopping routes to game service routes', async () => {
   const calls: string[] = [];
   const fetchImpl: typeof fetch = async (input) => {

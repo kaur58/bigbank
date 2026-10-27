@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ad } from '../types/game'
 import AdventureItem from './AdventureItem.vue'
+
 defineProps<{ adventures: Ad[]; disabled?: boolean; hidden?: boolean }>()
 defineEmits<{ select: [adventure: Ad] }>()
 </script>
@@ -19,7 +20,8 @@ defineEmits<{ select: [adventure: Ad] }>()
     </div>
     <div
       class="grid grid-cols-[1fr_75px] border-y border-[#30352b] px-1 py-3 font-mono text-[8px] tracking-widest text-[#777b6e]">
-      <span>QUEST DETAILS</span><span class="text-right">REWARD</span></div>
+      <span>QUEST DETAILS</span><span class="text-right">REWARD</span>
+    </div>
     <div v-if="!adventures.length"
       class="grid min-h-[135px] flex-1 place-content-center text-center text-xs text-[#777b6e]"><span
         class="text-2xl text-gold">✧</span>

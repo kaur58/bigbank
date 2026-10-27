@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { Ad } from '../types/game'
+
 defineProps<{ adventure: Ad; index: number; disabled?: boolean }>()
 defineEmits<{ select: [adventure: Ad] }>()
+
 function probabilityLabel(value: number) {
   const number = Number(value)
   return Number.isFinite(number) && number <= 1 ? `${Math.round(number * 100)}%` : value

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { ShopItem } from '../types/game'
 defineProps<{ item: ShopItem; disabled?: boolean }>()
+
 defineEmits<{ select: [item: ShopItem] }>()
+
 function iconFor(name: string) {
   if (/life|heart/i.test(name)) return '♥'
   if (/shield|armor/i.test(name)) return '⬡'
   if (/sword|weapon/i.test(name)) return '⚔'
   return '✧'
 }
+
 function descriptionFor(name: string) {
   return /life|heart/i.test(name) ? 'A little more time in the realm.' : 'A useful companion on the road.'
 }

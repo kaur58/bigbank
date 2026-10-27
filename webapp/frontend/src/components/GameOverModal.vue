@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { GameStats } from '../types/game'
+
 defineProps<{ stats: GameStats }>()
 defineEmits<{ close: [] }>()
 </script>
 <template>
-  <div class="fixed inset-0 z-20 overflow-y-auto bg-black/80 backdrop-blur-sm sm:flex sm:items-center sm:justify-center sm:p-5">
+  <div
+    class="fixed inset-0 z-20 overflow-y-auto bg-black/80 backdrop-blur-sm sm:flex sm:items-center sm:justify-center sm:p-5">
     <section
       class="min-h-screen w-full overflow-y-auto border-0 bg-forest-800 px-6 pb-8 pt-12 text-center shadow-2xl sm:min-h-0 sm:max-h-[calc(100dvh-2.5rem)] sm:w-full sm:max-w-[480px] sm:border sm:px-10 sm:py-8"
       role="dialog" aria-modal="true" aria-labelledby="game-over-title">
